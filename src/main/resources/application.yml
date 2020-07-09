@@ -1,0 +1,13 @@
+
+server:
+  servlet:
+    context-path: /basics
+    port: 8080
+
+datasource:
+  platform: h2
+
+logging:
+  level:
+    org:
+      springframework: ERROR

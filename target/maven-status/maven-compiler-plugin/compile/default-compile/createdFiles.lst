@@ -1,0 +1,6 @@
+com\basics\BasicsApplication.class
+com\basics\service\ICityService.class
+com\basics\service\CityService.class
+com\basics\controller\BasicsController.class
+com\basics\model\City.class
+com\basics\repository\CityRepository.class
