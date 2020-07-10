@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.ClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,9 +28,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.XML;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -44,6 +56,7 @@ public class UtilityMain {
 	public static final String FLD_SAMPLE = "static/" ;
 	public static final String TXT_SAMPLE = "Genesis_01.txt" ;
 	public static final String XML_SAMPLE = "xml/books.xml" ;
+	public static final String JSN_SAMPLE = "xml/books.json" ;
 	public static final String ZIP_SAMPLE = "xml_wav_plants_w10.zip" ;
 
 	public static void main( String[ ] args ) {
@@ -144,7 +157,7 @@ public class UtilityMain {
 		return txtLines;
 	}
 
-	public static File putFilesIntoZip( List<File> list ) {
+	public static File putFilesIntoZip( List<File> list ) { /* ??? */
 		//
 		// https://www.baeldung.com/java-compress-and-uncompress
 		File file = null;
@@ -154,12 +167,12 @@ public class UtilityMain {
 	public static String getXmlNode( String xmlfile, String xpathTxt, String delim ) {
 		//
 		// https://howtodoinjava.com/xml/evaluate-xpath-on-xml-string/
-		String txtLines = ""; 
+		String txtLines = "";
 		if ( xmlfile == null || xmlfile.equals( "" ) ) { xmlfile = "src/main/resources/" + FLD_SAMPLE + XML_SAMPLE; }
 		if ( xpathTxt == null || xpathTxt.equals( "" ) ) { xpathTxt = "/catalog/book/title"; }
 		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
 		//
-		try {		
+		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance( );
 			DocumentBuilder documentBuilder = dbf.newDocumentBuilder( ); // PCE
 			Document document = documentBuilder.parse( xmlfile ); // SAXException
@@ -170,13 +183,77 @@ public class UtilityMain {
 			String xpathNode = "/catalog/book/@id";
 			NodeList nodeList = (NodeList) xPath.evaluate( xpathNode , document, NODESET );
 			for (int ictr = 0; ictr < nodeList.getLength( ); ictr++) {
-				txtLines += delim + nodeList.item( ictr ).getNodeValue( );   
-			}		
-		}	
+				txtLines += delim + nodeList.item( ictr ).getNodeValue( );
+			}
+		}
 		catch (ParserConfigurationException ex)	 { LOGGER.info( ex.getMessage( ) ); }
 		catch (SAXException ex)					 { LOGGER.info( ex.getMessage( ) ); }
 		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
 		catch (IOException ex)					 { LOGGER.info( ex.getMessage( ) ); }
 		return txtLines;
 	}
+
+	public static String convertXml2Json( String xml ) {
+		//
+		String json = "";
+		if ( xml == null || xml.equals( "" ) ) { xml = getFileLocal( FLD_SAMPLE + XML_SAMPLE, "" ); }
+		int INDENT_FACTOR = 4;
+		//
+		try {
+			JSONObject jsonObject = XML.toJSONObject( xml );
+			json = jsonObject.toString( INDENT_FACTOR );
+		}
+		catch (JSONException ex) { LOGGER.info( ex.getMessage( ) ); }
+		return json;
+	}
+
+	public static String convertJson2Xml( String json ) {
+		//
+		String xml = "";
+		if ( json == null || json.equals( "" ) ) { json = getFileLocal( FLD_SAMPLE + JSN_SAMPLE, "" ); }
+		//
+		try {
+			JSONObject jsonObj = new JSONObject( json );
+			xml = XML.toString(jsonObj);
+		}
+		catch (JSONException ex) { LOGGER.info( ex.getMessage( ) ); }
+		return xml;
+	}
+
+	public static String formatXml( String xmlOld ) {
+		//
+		String xml = "";
+		if ( xmlOld == null || xmlOld.equals( "" ) ) { xmlOld = getFileLocal( FLD_SAMPLE + XML_SAMPLE, "" ); }
+		//
+		Document document = null;
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance( );
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder( );
+			StringReader stringReader = new StringReader( xmlOld );
+			InputSource inputSource = new InputSource( stringReader );
+			document = documentBuilder.parse( inputSource );
+		}
+		catch (ParserConfigurationException  ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (SAXException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		try {
+			StringWriter stringWriter = new StringWriter( );
+			StreamResult xmlOutput = new StreamResult( stringWriter );
+			TransformerFactory tf = TransformerFactory.newInstance( );
+			// tf.setAttribute( "indent-number", 4 );
+			Transformer transformer = tf.newTransformer( );
+			transformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+			transformer.setOutputProperty( "{http://xml.apache.org/xslt}indent-amount", "4" );
+			transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "no" );
+			transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+			transformer.setOutputProperty( OutputKeys.ENCODING, "UTF-8" );
+			DOMSource domSource = new DOMSource( document );
+			transformer.transform( domSource , xmlOutput );
+			xml = xmlOutput.getWriter( ).toString( ) ;
+		}
+		catch (TransformerConfigurationException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (TransformerException ex) { LOGGER.info( ex.getMessage( ) ); }
+		return xml;
+	}
+
 }

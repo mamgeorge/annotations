@@ -68,7 +68,10 @@ public class BasicsController {
 		System.out.println( GREEN + "utils" + RESET );
 		// txtlines = UtilityMain.getFileLocal( "" , "<br />" );
 		// txtlines = UtilityMain.getFileList( "" , "<br />" );
-		txtlines = UtilityMain.getXmlNode( "" , "" , "" );
+		// txtlines = UtilityMain.getXmlNode( "" , "" , "" );
+		// txtlines = UtilityMain.convertXml2Json( "" );
+		// txtlines = UtilityMain.convertJson2Xml( "" );
+		txtlines = UtilityMain.formatXml( UtilityMain.convertJson2Xml( "" ) );
 		System.out.println( txtlines );
 		return txtlines; 
 	}
