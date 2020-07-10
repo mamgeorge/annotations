@@ -2,14 +2,14 @@
 <html><head><title>index</title>
 <meta charset = "UTF-8">
 <link rel = "stylesheet" href = "style.css">
-<style>
-
-</style>
 </head>
 
-<body>
+<body><center><h3>index</h3>
 
-<a href = "cities">show cities</a>
+  <a href = "cities">cities</a>
+| <a href = "time" >time</a>
+| <a href = "utils" >utils</a>
+| <a href = "exit" >exit</a>
 
-</center> 
+</center></body>
 </html>

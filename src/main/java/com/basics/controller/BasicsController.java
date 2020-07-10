@@ -4,6 +4,7 @@ import com.basics.service.ICityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,20 +12,36 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+// new
+import static com.basics.util.UtilityMain.showTime;
+import static com.basics.util.UtilityMain.GREEN;
+import static com.basics.util.UtilityMain.RESET;
+import com.basics.util.UtilityMain;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.context.ApplicationContext;
+import org.springframework.boot.SpringApplication;
+
 // @Controller annotation marks a class as a web controller
 // @RequestMapping maps HTTP request with a path to a controller method
 // In the second case, it maps the /cities URL to the showCities() method.
-@Controller
+@RestController
 public class BasicsController {
 
 	@Autowired
 	private ICityService cityService;
 
-	@RequestMapping( "/" )
-	public String index(Model model) {
+	@Autowired
+	private ApplicationContext applicationContext;
+
+	@GetMapping( "/" )
+	public ModelAndView index(Model model) {
 		//
 		System.out.println("index");
-		return "index";
+		Map<String, Object> params = new HashMap<>( );
+		params.put( "index", "index" );
+		// return "index";
+		return new ModelAndView("index", params);		
 	}
 
 	@RequestMapping( "/cities" )
@@ -36,4 +53,29 @@ public class BasicsController {
 		params.put( "cities", cities );
 		return new ModelAndView("showCities", params);
 	}
+
+	@GetMapping( "/time" )
+	public String showTimer( ) { 
+		//
+		System.out.println( GREEN + "TIME" + RESET );
+		System.out.println( showTime( ) );
+		return showTime( ); 
+	}	
+
+	@GetMapping( "/utils" )
+	public String showUtils( ) { 
+		//
+		System.out.println( GREEN + "utils" + RESET );
+		String txtlines = UtilityMain.getFileLocal( "" , "<br />" );
+		System.out.println( txtlines );
+		return txtlines; 
+	}
+
+	@GetMapping( "/exit" )
+	public void close( ) {
+		//
+		System.out.println( GREEN + "EXIT" + RESET );
+		SpringApplication.exit(applicationContext);
+	}
+
 }
