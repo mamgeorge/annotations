@@ -2,22 +2,34 @@ package com.basics.util;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.util.logging.Logger;
+import static javax.xml.xpath.XPathConstants.STRING;
+import static javax.xml.xpath.XPathConstants.NODESET;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.ClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathExpressionException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -139,10 +151,32 @@ public class UtilityMain {
 		return null;
 	}
 
-	public static String getXmlNode( String xml, String xpath ) {
+	public static String getXmlNode( String xmlfile, String xpathTxt, String delim ) {
 		//
-		// jaxen?
-		String txtLines = "";
+		// https://howtodoinjava.com/xml/evaluate-xpath-on-xml-string/
+		String txtLines = ""; 
+		if ( xmlfile == null || xmlfile.equals( "" ) ) { xmlfile = "src/main/resources/" + FLD_SAMPLE + XML_SAMPLE; }
+		if ( xpathTxt == null || xpathTxt.equals( "" ) ) { xpathTxt = "/catalog/book/title"; }
+		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
+		//
+		try {		
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance( );
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder( ); // PCE
+			Document document = documentBuilder.parse( xmlfile ); // SAXException
+			XPathFactory xpf = XPathFactory.newInstance( );
+			XPath xPath = xpf.newXPath( );
+			txtLines = (String) xPath.evaluate( xpathTxt , document , STRING );
+			//
+			String xpathNode = "/catalog/book/@id";
+			NodeList nodeList = (NodeList) xPath.evaluate( xpathNode , document, NODESET );
+			for (int ictr = 0; ictr < nodeList.getLength( ); ictr++) {
+				txtLines += delim + nodeList.item( ictr ).getNodeValue( );   
+			}		
+		}	
+		catch (ParserConfigurationException ex)	 { LOGGER.info( ex.getMessage( ) ); }
+		catch (SAXException ex)					 { LOGGER.info( ex.getMessage( ) ); }
+		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
+		catch (IOException ex)					 { LOGGER.info( ex.getMessage( ) ); }
 		return txtLines;
 	}
 }

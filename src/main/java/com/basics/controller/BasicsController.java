@@ -67,7 +67,8 @@ public class BasicsController {
 		String txtlines = "";
 		System.out.println( GREEN + "utils" + RESET );
 		// txtlines = UtilityMain.getFileLocal( "" , "<br />" );
-		txtlines = UtilityMain.getFileList( "" , "<br />" );
+		// txtlines = UtilityMain.getFileList( "" , "<br />" );
+		txtlines = UtilityMain.getXmlNode( "" , "" , "" );
 		System.out.println( txtlines );
 		return txtlines; 
 	}
