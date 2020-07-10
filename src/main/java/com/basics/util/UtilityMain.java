@@ -89,6 +89,7 @@ public class UtilityMain {
 		List<File> list = new ArrayList<>( );
 		if ( fileName == null || fileName.equals( "" ) ) { fileName = FLD_SAMPLE + ZIP_SAMPLE; }
 		int BUFFER_SIZE = 4096;
+		String DIR_TEMP = "src/main/resources/temp/";
 		String fileItem = "";
 		try {
 			//
@@ -105,7 +106,7 @@ public class UtilityMain {
 			while (zipEntry != null) {
 				//
 				fileItem = zipEntry.getName( );
-				file = new File( fileItem );
+				file = new File( DIR_TEMP + fileItem );
 				intReadLen = 0;
 				bytes = new byte[ BUFFER_SIZE ];
 				fos = new FileOutputStream( file );
