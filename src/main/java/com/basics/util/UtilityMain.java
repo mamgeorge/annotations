@@ -3,20 +3,24 @@ package com.basics.util;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.util.*;
 import java.util.logging.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class UtilityMain {
 
@@ -79,25 +83,58 @@ public class UtilityMain {
 		return txtLines;
 	}
 
-	public static File[ ] getFilesFromZip( String fileName ) {
+	public static List<File> getFilesFromZip( String fileName ) {
 		//
 		// https://www.baeldung.com/java-compress-and-uncompress
-		File[ ] files = null;
+		List<File> list = new ArrayList<>( );
 		if ( fileName == null || fileName.equals( "" ) ) { fileName = FLD_SAMPLE + ZIP_SAMPLE; }
-		// try {
+		int BUFFER_SIZE = 4096;
+		String fileItem = "";
+		try {
 			//
 			ClassLoader classLoader = ClassLoader.getSystemClassLoader( );
-			File file = new File( classLoader.getResource( fileName ).getFile( ) );
+			File fileZip = new File( classLoader.getResource( fileName ).getFile( ) );
+			FileInputStream fis = new FileInputStream( fileZip );
+			ZipInputStream zis = new ZipInputStream( fis );
+			ZipEntry zipEntry = zis.getNextEntry();
 			//
-			// get file array from zip
-		// }
-		// catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
-		return files;
+			FileOutputStream fos = null;
+			byte[] bytes = null;
+			int intReadLen = 0;
+			File file = null;
+			while (zipEntry != null) {
+				//
+				fileItem = zipEntry.getName( );
+				file = new File( fileItem );
+				intReadLen = 0;
+				bytes = new byte[ BUFFER_SIZE ];
+				fos = new FileOutputStream( file );
+				while ( (intReadLen = zis.read( bytes ) ) > 0 ) {
+					fos.write( bytes , 0, intReadLen );
+				}
+				fos.close( );
+				zipEntry = zis.getNextEntry( );
+				list.add( file );
+			}
+		}
+		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		return list;
 	}
 
-	public static FileOutputStream putFilesIntoZip( File[ ] files ) {
+	public static String getFileList( String fileName , String delim ) {
+		//
+		String txtLines = "";
+		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
+		//
+		List<File> list = UtilityMain.getFilesFromZip( fileName );
+		for (File file : list) { txtLines += file.getName( ) + delim; }
+		return txtLines;
+	}
+
+	public static File putFilesIntoZip( List<File> list ) {
 		//
 		// https://www.baeldung.com/java-compress-and-uncompress
+		File file = null;
 		return null;
 	}
 
@@ -108,6 +145,3 @@ public class UtilityMain {
 		return txtLines;
 	}
 }
-
-
-

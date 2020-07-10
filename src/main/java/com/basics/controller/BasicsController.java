@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.List;
 
 // new
-import static com.basics.util.UtilityMain.showTime;
 import static com.basics.util.UtilityMain.GREEN;
 import static com.basics.util.UtilityMain.RESET;
 import com.basics.util.UtilityMain;
@@ -58,15 +57,17 @@ public class BasicsController {
 	public String showTimer( ) { 
 		//
 		System.out.println( GREEN + "TIME" + RESET );
-		System.out.println( showTime( ) );
-		return showTime( ); 
+		System.out.println( UtilityMain.showTime( ) );
+		return UtilityMain.showTime( ); 
 	}	
 
 	@GetMapping( "/utils" )
 	public String showUtils( ) { 
 		//
+		String txtlines = "";
 		System.out.println( GREEN + "utils" + RESET );
-		String txtlines = UtilityMain.getFileLocal( "" , "<br />" );
+		// txtlines = UtilityMain.getFileLocal( "" , "<br />" );
+		txtlines = UtilityMain.getFileList( "" , "<br />" );
 		System.out.println( txtlines );
 		return txtlines; 
 	}
