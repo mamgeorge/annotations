@@ -1,4 +1,4 @@
-package com.basics.service;
+package com.basics.services;
 
 import com.basics.model.City;
 import com.basics.repository.CityRepository;
@@ -17,5 +17,5 @@ public class CityService implements ICityService {
 	private CityRepository cityRepository;
 
 	@Override
-	public List<City> findAll() { return (List<City>) cityRepository.findAll(); }
+	public List<City> findAll( ) { return ( List<City> ) cityRepository.findAll( ); }
 }

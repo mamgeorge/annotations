@@ -1,6 +1,6 @@
 package com.basics.controller;
 
-import com.basics.service.ICityService;
+import com.basics.services.ICityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,16 +24,14 @@ import org.springframework.boot.SpringApplication;
 // @Controller annotation marks a class as a web controller
 // @RequestMapping maps HTTP request with a path to a controller method
 // In the second case, it maps the /cities URL to the showCities() method.
-@RestController
+@RestController 
 public class BasicsController {
 
-	@Autowired
-	private ICityService cityService;
+	@Autowired private ICityService cityService;
 
-	@Autowired
-	private ApplicationContext applicationContext;
+	@Autowired private ApplicationContext applicationContext;
 
-	@GetMapping( "/" )
+	@GetMapping( "/" ) 
 	public ModelAndView index(Model model) {
 		//
 		System.out.println("index");
@@ -43,7 +41,7 @@ public class BasicsController {
 		return new ModelAndView("index", params);		
 	}
 
-	@RequestMapping( "/cities" )
+	@RequestMapping( "/cities" ) 
 	public ModelAndView showCities( ) {
 		//
 		System.out.println("cities");
@@ -67,8 +65,8 @@ public class BasicsController {
 		String txtlines = "";
 		System.out.println( GREEN + "utils" + RESET );
 		// txtlines = UtilityMain.getFileLocal( "" , "<br />" );
-		// txtlines = UtilityMain.getFileList( "" , "<br />" );
-		// txtlines = UtilityMain.getXmlNode( "" , "" , "" );
+		// txtlines = UtilityMain.getZipFileList( "" , "<br />" );
+		// txtlines = UtilityMain.getXmlFileNode( "" , "" , "" );
 		// txtlines = UtilityMain.convertXml2Json( "" );
 		// txtlines = UtilityMain.convertJson2Xml( "" );
 		txtlines = UtilityMain.formatXml( UtilityMain.convertJson2Xml( "" ) );

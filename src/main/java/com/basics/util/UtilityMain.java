@@ -52,6 +52,7 @@ public class UtilityMain {
 	public static final String RESET = "\u001b[0m";
 	public static final String GREEN = "\u001b[32,1m";
 	public static final String DLM = "\n";
+	public static final String PAR = "\n\t";
 
 	public static final String FLD_SAMPLE = "static/" ;
 	public static final String TXT_SAMPLE = "Genesis_01.txt" ;
@@ -147,7 +148,7 @@ public class UtilityMain {
 		return list;
 	}
 
-	public static String getFileList( String fileName , String delim ) {
+	public static String getZipFileList( String fileName , String delim ) {
 		//
 		String txtLines = "";
 		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
@@ -164,7 +165,7 @@ public class UtilityMain {
 		return null;
 	}
 
-	public static String getXmlNode( String xmlfile, String xpathTxt, String delim ) {
+	public static String getXmlFileNode( String xmlfile, String xpathTxt, String delim ) {
 		//
 		// https://howtodoinjava.com/xml/evaluate-xpath-on-xml-string/
 		String txtLines = "";
@@ -190,6 +191,22 @@ public class UtilityMain {
 		catch (SAXException ex)					 { LOGGER.info( ex.getMessage( ) ); }
 		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
 		catch (IOException ex)					 { LOGGER.info( ex.getMessage( ) ); }
+		return txtLines;
+	}
+
+	public static String getXmlNode( String xml, String xpathTxt, String delim ) {
+		//
+		// https://howtodoinjava.com/xml/evaluate-xpath-on-xml-string/
+		String txtLines = "";
+		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
+		//
+		try {
+			StringReader stringReader = new StringReader( xml );
+			InputSource inputSource = new InputSource( stringReader );
+			XPath xPath = XPathFactory.newInstance( ).newXPath( );
+			txtLines = xPath.evaluate( xpathTxt , inputSource );
+		}
+		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
 		return txtLines;
 	}
 
