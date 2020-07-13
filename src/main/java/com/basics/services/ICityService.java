@@ -1,4 +1,4 @@
-package com.basics.service;
+package com.basics.services;
 
 import com.basics.model.City;
 import java.util.List;
