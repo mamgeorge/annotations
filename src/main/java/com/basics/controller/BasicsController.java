@@ -24,6 +24,8 @@ import org.springframework.boot.SpringApplication;
 // @Controller annotation marks a class as a web controller
 // @RequestMapping maps HTTP request with a path to a controller method
 // In the second case, it maps the /cities URL to the showCities() method.
+// cd c:\workspace\github\spring_annotations
+// mvn clean install
 @RestController 
 public class BasicsController {
 
@@ -32,7 +34,7 @@ public class BasicsController {
 	@Autowired private ApplicationContext applicationContext;
 
 	@GetMapping( "/" ) 
-	public ModelAndView index(Model model) {
+	public ModelAndView root(Model model) {
 		//
 		System.out.println("index");
 		Map<String, Object> params = new HashMap<>( );
@@ -51,10 +53,10 @@ public class BasicsController {
 		return new ModelAndView("showCities", params);
 	}
 
-	@GetMapping( "/time" )
+	@GetMapping( "/timer" )
 	public String showTimer( ) { 
 		//
-		System.out.println( GREEN + "TIME" + RESET );
+		System.out.println( GREEN + "timer" + RESET );
 		System.out.println( UtilityMain.showTime( ) );
 		return UtilityMain.showTime( ); 
 	}	
@@ -74,8 +76,8 @@ public class BasicsController {
 		return txtlines; 
 	}
 
-	@GetMapping( "/exit" )
-	public void close( ) {
+	@GetMapping( "/exits" )
+	public void exits( ) {
 		//
 		System.out.println( GREEN + "EXIT" + RESET );
 		SpringApplication.exit(applicationContext);

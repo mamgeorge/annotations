@@ -6,10 +6,11 @@
 
 <body><center><h3>index</h3>
 
+  <a href = "/basics">/basics</a>
   <a href = "cities">cities</a>
-| <a href = "time" >time</a>
+| <a href = "timer" >timer</a>
 | <a href = "utils" >utils</a>
-| <a href = "exit" >exit</a>
+| <a href = "exits" >exits</a>
 
 </center></body>
 </html>
