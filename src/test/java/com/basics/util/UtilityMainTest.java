@@ -11,6 +11,13 @@ public class UtilityMainTest {
 
 	@Before public void setUp( ) throws Exception { }
 
+	@Test public void showSys( ) throws Exception {
+		//
+		String txtLines = UtilityMain.showSys( );
+		LOGGER.info( PAR + txtLines.substring( 0, 10 ) );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
 	@Test public void showTime( ) throws Exception {
 		//
 		String txtLine = UtilityMain.showTime( );

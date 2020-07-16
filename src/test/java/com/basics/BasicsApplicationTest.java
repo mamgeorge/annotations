@@ -1,5 +1,10 @@
 package com.basics;
 
+import static com.basics.util.UtilityMain.GREEN;
+import static com.basics.util.UtilityMain.RESET;
+import static com.basics.util.UtilityMain.PAR;
+import static com.basics.util.UtilityMain.LOGGER;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,11 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 // @SpringBootTest
 public class BasicsApplicationTest {
 	//
-    public static void main( String[] args ) { System.out.println( "\u001b[32;1m" + "BasicsApplicationTest.main" + "\u001b[0m" ); }
+    public static void main( String[] args )
+	{ System.out.println( GREEN + "BasicsApplicationTest.main" + RESET ); }
 
 	@Test
-	public void sample( ) { 
+	public void sample( ) {
 		//
-		System.out.println( "\u001b[32;1m" + "BasicsApplicationTest.sample" + "\u001b[0m" ); 
+		String txtLine = GREEN + "BasicsApplicationTest.sample" + RESET;
+		LOGGER.info( PAR + txtLine );
 	}
 }

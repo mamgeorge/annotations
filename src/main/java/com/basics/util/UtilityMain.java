@@ -13,14 +13,19 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.ClassLoader;
+import java.lang.StringBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,14 +48,11 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.XML;
 
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 public class UtilityMain {
 
 	public static final Logger LOGGER = Logger.getLogger( UtilityMain.class.getName( ) );
-	public static final String RESET = "\u001b[0m";
 	public static final String GREEN = "\u001b[32,1m";
+	public static final String RESET = "\u001b[0m";
 	public static final String DLM = "\n";
 	public static final String PAR = "\n\t";
 
@@ -65,10 +67,28 @@ public class UtilityMain {
 		System.out.println( GREEN + "DONE" + RESET );
 	}
 
+	public static String showSys( ) { 
+		//
+		Map<String, String> mapEnv = System.getenv( );
+		Map<String, String> mapEnvTree = new TreeMap<String, String>( mapEnv );
+		StringBuffer stringBuffer = new StringBuffer( );
+		stringBuffer.append( "[" );
+		// env.forEach( ( key , val ) -> stringBuffer.append( key + ": " + val + dlm ) );
+		mapEnvTree.forEach( ( key, val ) -> {
+			//
+			val = val.replace( "\\", "/" );
+			val = val.replace( "\"", "'" );
+			stringBuffer.append( "{\"" + key + "\":\"" + val + "\"}," );
+		} );
+		stringBuffer.append( "{\"" + "USERNAME" + "\":\"" + System.getenv( "USERNAME" ) + "\"}" );
+		stringBuffer.append( "]" );
+		return stringBuffer.toString( );
+	} 
+
 	public static String showTime( ) {
 		//
 		String txtLine = "";
-		txtLine = GREEN + new Date( ).toString( ) + RESET;
+		txtLine = new Date( ).toString( );
 		return txtLine;
 	}
 
