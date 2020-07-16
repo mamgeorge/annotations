@@ -51,8 +51,8 @@ import org.json.XML;
 public class UtilityMain {
 
 	public static final Logger LOGGER = Logger.getLogger( UtilityMain.class.getName( ) );
-	public static final String RESET = "\u001b[0m";
 	public static final String GREEN = "\u001b[32,1m";
+	public static final String RESET = "\u001b[0m";
 	public static final String DLM = "\n";
 	public static final String PAR = "\n\t";
 
@@ -88,7 +88,7 @@ public class UtilityMain {
 	public static String showTime( ) {
 		//
 		String txtLine = "";
-		txtLine = GREEN + new Date( ).toString( ) + RESET;
+		txtLine = new Date( ).toString( );
 		return txtLine;
 	}
 

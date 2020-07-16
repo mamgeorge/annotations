@@ -7,12 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "cities")
+@Entity @Table(name = "cities")
 public class City {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private int population;

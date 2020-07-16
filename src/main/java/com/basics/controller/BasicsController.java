@@ -13,37 +13,37 @@ import java.util.Map;
 import java.util.List;
 
 // new
-import static com.basics.util.UtilityMain.GREEN;
-import static com.basics.util.UtilityMain.RESET;
+// import static com.basics.util.UtilityMain.GREEN;
+// import static com.basics.util.UtilityMain.RESET;
 import com.basics.util.UtilityMain;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.context.ApplicationContext;
 import org.springframework.boot.SpringApplication;
 
-// @Controller annotation marks a class as a web controller
-// @RequestMapping maps HTTP request with a path to a controller method
-// In the second case, it maps the /cities URL to the showCities() method.
 // cd c:\workspace\github\spring_annotations
 // mvn clean install
-@RestController 
+@RestController
 public class BasicsController {
 
 	@Autowired private ICityService cityService;
 
 	@Autowired private ApplicationContext applicationContext;
 
-	@GetMapping( "/" ) 
+	private static final String RETURN = "<br /><a href = '/basics' >return</a>";
+
+	@GetMapping( "/" )
 	public ModelAndView root(Model model) {
 		//
 		System.out.println("index");
 		Map<String, Object> params = new HashMap<>( );
 		params.put( "index", "index" );
 		// return "index";
-		return new ModelAndView("index", params);		
+		return new ModelAndView("index", params);
 	}
 
-	@RequestMapping( "/cities" ) 
+	// @RequestMapping( "/cities" )
+	@GetMapping( "/cities" )
 	public ModelAndView showCities( ) {
 		//
 		System.out.println("cities");
@@ -54,32 +54,32 @@ public class BasicsController {
 	}
 
 	@GetMapping( "/timer" )
-	public String showTimer( ) { 
+	public String showTimer( ) {
 		//
-		System.out.println( GREEN + "timer" + RESET );
+		System.out.println( "timer" );
 		System.out.println( UtilityMain.showTime( ) );
-		return UtilityMain.showTime( ); 
-	}	
+		return UtilityMain.showTime( ) + RETURN;
+	}
 
 	@GetMapping( "/utils" )
-	public String showUtils( ) { 
+	public String showUtils( ) {
 		//
 		String txtlines = "";
-		System.out.println( GREEN + "utils" + RESET );
-		// txtlines = UtilityMain.getFileLocal( "" , "<br />" );
+		System.out.println( "utils" );
+		txtlines = UtilityMain.getFileLocal( "" , "<br />" );
 		// txtlines = UtilityMain.getZipFileList( "" , "<br />" );
 		// txtlines = UtilityMain.getXmlFileNode( "" , "" , "" );
 		// txtlines = UtilityMain.convertXml2Json( "" );
 		// txtlines = UtilityMain.convertJson2Xml( "" );
-		txtlines = UtilityMain.formatXml( UtilityMain.convertJson2Xml( "" ) );
+		// txtlines = UtilityMain.formatXml( UtilityMain.convertJson2Xml( "" ) );
 		System.out.println( txtlines );
-		return txtlines; 
+		return txtlines + RETURN;
 	}
 
 	@GetMapping( "/exits" )
 	public void exits( ) {
 		//
-		System.out.println( GREEN + "EXIT" + RESET );
+		System.out.println( "EXIT" );
 		SpringApplication.exit(applicationContext);
 	}
 
