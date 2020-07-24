@@ -10,10 +10,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.ClassLoader;
 import java.lang.StringBuffer;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,27 +36,31 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.json.JSONObject;
-import org.json.JSONException;
-import org.json.XML;
 
 public class UtilityMain {
 
 	public static final Logger LOGGER = Logger.getLogger( UtilityMain.class.getName( ) );
+
+	public static final String USER_AGENT = "Mozilla/5.0";
+	public static final String CONTENTTYPE_FORM = "application/x-www-form-urlencoded";
+
 	public static final String GREEN = "\u001b[32,1m";
 	public static final String RESET = "\u001b[0m";
 	public static final String DLM = "\n";
@@ -67,7 +77,7 @@ public class UtilityMain {
 		System.out.println( GREEN + "DONE" + RESET );
 	}
 
-	public static String showSys( ) { 
+	public static String showSys( ) {
 		//
 		Map<String, String> mapEnv = System.getenv( );
 		Map<String, String> mapEnvTree = new TreeMap<String, String>( mapEnv );
@@ -83,7 +93,7 @@ public class UtilityMain {
 		stringBuffer.append( "{\"" + "USERNAME" + "\":\"" + System.getenv( "USERNAME" ) + "\"}" );
 		stringBuffer.append( "]" );
 		return stringBuffer.toString( );
-	} 
+	}
 
 	public static String showTime( ) {
 		//
@@ -126,6 +136,84 @@ public class UtilityMain {
 			txtLines = txtLines.replaceAll( "\n" , delim );
 		}
 		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		return txtLines;
+	}
+
+	public static String urlGet( String link ) {
+		//
+		String txtLines = "";
+		try{
+			URL url = new URL( link );
+			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection( );
+			httpConn.setRequestMethod( "GET" );
+			httpConn.setRequestProperty( "User-Agent", USER_AGENT );
+			httpConn.setConnectTimeout(5000);
+			httpConn.setReadTimeout(5000);
+			//
+			int responseCode = httpConn.getResponseCode( );
+			LOGGER.info( "Sending GET to: " + url );
+			LOGGER.info( "Response code : " + responseCode );
+			//
+			InputStream inputStream = httpConn.getInputStream( );
+			InputStreamReader isr = new InputStreamReader( inputStream );
+			BufferedReader bufferedReader = new BufferedReader( isr );
+			StringBuilder stringBuilder = new StringBuilder( );
+			String txtLine = "";
+			while ( ( txtLine = bufferedReader.readLine( ) ) != null ) {
+				stringBuilder.append( txtLine );
+			}
+			txtLines = stringBuilder.toString( );
+		} 
+		catch( IOException ex ) {
+			txtLines = ex.getMessage( );
+			LOGGER.log( Level.SEVERE, "#### ERROR: {0} ", txtLines );
+		}
+		return txtLines;
+	}
+
+	public static String urlPost( String link, String postParms ) {
+		//
+		// http://zetcode.com/java/getpostrequest/
+		String txtLines = "";
+		try{
+			URL url = new URL( link );
+			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection( );
+			httpConn.setDoOutput(true);
+			httpConn.setRequestMethod( "POST" );
+			httpConn.setRequestProperty( "User-Agent", USER_AGENT );
+			httpConn.setRequestProperty( "Content-Type", CONTENTTYPE_FORM );
+			//
+			OutputStream outputStream = httpConn.getOutputStream( );
+			outputStream.write( postParms.getBytes( ) );
+			outputStream.flush( );
+			outputStream.close( );
+			//
+			int responseCode = httpConn.getResponseCode( );
+			LOGGER.info( "Sending POST : " + url );
+			LOGGER.info( "Response code: " + responseCode );
+			//
+			InputStream inputStream = httpConn.getInputStream( );
+			InputStreamReader isr = new InputStreamReader( inputStream );
+			BufferedReader bufferedReader = null;
+			StringBuffer stringBuffer = new StringBuffer( );
+			String txtLine = "";
+			if (responseCode == HttpURLConnection.HTTP_OK ) {
+				//
+				bufferedReader = new BufferedReader(isr);
+				while ( ( txtLine = bufferedReader.readLine( ) ) != null ) {
+					stringBuffer.append(txtLine);
+				}
+				bufferedReader.close( );
+				txtLines = stringBuffer.toString( );
+			}
+			else {
+				LOGGER.info( "POST failed to: " +  link );
+			}
+		} 
+		catch( IOException ex ) {
+			txtLines = ex.getMessage( );
+			LOGGER.log( Level.SEVERE, "#### ERROR: {0} ", txtLines );
+		}
 		return txtLines;
 	}
 

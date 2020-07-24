@@ -27,7 +27,7 @@ public class UtilityMainTest {
 
 	@Test public void getFileLines( ) throws Exception {
 		//
-		String fileName = "C:/workspace/resources/Genesis_01.txt";
+		String fileName = "C:/workspace/resources/xml/Genesis_01.txt";
 		String txtLines = UtilityMain.getFileLines( fileName , "" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
 		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
@@ -38,6 +38,27 @@ public class UtilityMainTest {
 		String txtLines = UtilityMain.getFileLocal( "" , "" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
 		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
+	}
+
+	@Test public void urlGet( ) {
+		//
+		String txtLines = "";
+		String link = "http://www.google.com";
+		//
+		txtLines = UtilityMain.urlGet( link );
+		LOGGER.info( PAR + txtLines.substring( 0, 60 ) );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
+	@Test public void urlPost( ) {
+		//
+		String txtLines = "";
+		String link = "https://httpbin.org/post";
+		String postParms = "name=Martin&occupation=programmer";
+		//
+		txtLines = UtilityMain.urlPost( link , postParms );
+		LOGGER.info( PAR + txtLines.substring( 0, 60 ) );
+		assertTrue( txtLines.length( ) > 1 );
 	}
 
 	@Test public void getXmlNode( ) throws Exception {
