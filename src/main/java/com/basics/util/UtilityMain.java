@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.ClassLoader;
 import java.lang.StringBuffer;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -60,11 +63,12 @@ public class UtilityMain {
 
 	public static final String USER_AGENT = "Mozilla/5.0";
 	public static final String CONTENTTYPE_FORM = "application/x-www-form-urlencoded";
-
+	public static final String CONTENTTYPE_MULTI = "multipart/form-data; boundary=";
 	public static final String GREEN = "\u001b[32,1m";
 	public static final String RESET = "\u001b[0m";
 	public static final String DLM = "\n";
 	public static final String PAR = "\n\t";
+	public static final String CRLF = "\r\n";
 
 	public static final String FLD_SAMPLE = "static/" ;
 	public static final String TXT_SAMPLE = "Genesis_01.txt" ;
@@ -163,7 +167,7 @@ public class UtilityMain {
 				stringBuilder.append( txtLine );
 			}
 			txtLines = stringBuilder.toString( );
-		} 
+		}
 		catch( IOException ex ) {
 			txtLines = ex.getMessage( );
 			LOGGER.log( Level.SEVERE, "#### ERROR: {0} ", txtLines );
@@ -209,11 +213,78 @@ public class UtilityMain {
 			else {
 				LOGGER.info( "POST failed to: " +  link );
 			}
-		} 
+		}
 		catch( IOException ex ) {
 			txtLines = ex.getMessage( );
 			LOGGER.log( Level.SEVERE, "#### ERROR: {0} ", txtLines );
 		}
+		return txtLines;
+	}
+
+	public static String urlPostFile( String link, String postParms, String pathTxt, String pathBin ) {
+		//
+		// https://www.baeldung.com/httpclient-multipart-upload
+		// https://stackoverflow.com/questions/2469451/upload-files-from-java-client-to-a-http-server
+		String txtLines = "";
+		String PATH_PREF = "";
+		if ( PATH_PREF == null || PATH_PREF.equals( "" ) )
+		{ PATH_PREF = "C:/workspace/github/spring_annotations/src/main/resources/"; }
+		//
+		File fileTxt = new File( PATH_PREF + pathTxt );
+		File fileBin = new File( PATH_PREF + pathBin );
+		String boundary = Long.toHexString( System.currentTimeMillis( ) ); // random boundary
+		URLConnection urlConn = null;
+		try {
+			URL url = new URL( link );
+			urlConn = url.openConnection( );
+			urlConn.setDoOutput(true);
+			urlConn.setRequestProperty( "Content-Type", CONTENTTYPE_MULTI + boundary );
+			//
+			System.out.println( "0 urlConn.getOutputStream( )" );
+			OutputStream outputStream = urlConn.getOutputStream( );
+			OutputStreamWriter osw = new OutputStreamWriter( outputStream, UTF_8 );
+			PrintWriter writer = new PrintWriter( osw , true);
+			//
+			System.out.println( "1 Send normal parms" );
+			writer.append( "--" + boundary ).append(CRLF);
+			writer.append( "Content-Disposition: form-data; name=\"param\"").append(CRLF);
+			writer.append( "Content-Type: text/plain; charset=" + UTF_8 ).append(CRLF);
+			writer.append(CRLF).append( postParms ).append(CRLF).flush( );
+			//
+			System.out.println( "2 Send text file in charset UTF_8" );
+			writer.append( "--" + boundary).append(CRLF);
+			writer.append( "Content-Disposition: form-data; name=\"textFile\"; filename=\""
+				+ fileTxt.getName( ) + "\"" ).append(CRLF);
+			writer.append("Content-Type: text/plain; charset=" + UTF_8 ).append(CRLF);
+			writer.append(CRLF).flush( );
+			Files.copy( fileTxt.toPath( ), outputStream );
+			outputStream.flush( ); // Important before continuing with writer!
+			writer.append(CRLF).flush( ); // CRLF indicates end of boundary
+			//
+			System.out.println( "3 Send binary file" );
+			writer.append("--" + boundary).append(CRLF);
+			writer.append("Content-Disposition: form-data; name=\"binaryFile\"; filename=\""
+				+ fileBin.getName( ) + "\"" ).append(CRLF);
+			String fileBinContentType = URLConnection.guessContentTypeFromName( fileBin.getName( ) );
+			writer.append( "Content-Type: " + fileBinContentType ).append(CRLF);
+			writer.append( "Content-Transfer-Encoding: binary" ).append(CRLF);
+			writer.append(CRLF).flush( );
+			Files.copy( fileBin.toPath( ), outputStream );
+			outputStream.flush( ); // Important before continuing with writer!
+			writer.append(CRLF).flush( ); // CRLF indicates end of boundary
+			//
+			System.out.println( "4 end of multipart/form-data" );
+			writer.append( "--" + boundary + "--" ).append(CRLF).flush( );
+			//
+			System.out.println( "5 request lazily fired to get response info" );
+			int responseCode = ( (HttpURLConnection) urlConn).getResponseCode( );
+			txtLines = "responseCode: " + responseCode; // should be 200
+		}
+		catch( IOException ex ) {
+			txtLines = ex.getMessage( );
+			LOGGER.log( Level.SEVERE, "#### ERROR: {0} ", txtLines );
+		}
+		//
 		return txtLines;
 	}
 

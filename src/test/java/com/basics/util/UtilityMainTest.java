@@ -61,6 +61,19 @@ public class UtilityMainTest {
 		assertTrue( txtLines.length( ) > 1 );
 	}
 
+	@Test public void urlPostFile( ) {
+		//
+		String txtLines = "";
+		String link = "https://httpbin.org/post";
+		String postParms = "name=Martin&occupation=programmer";
+		String pathTxt = "static/xml/books.json";
+		String pathBin = "static/xml/hal9000.wav";
+		//
+		txtLines = UtilityMain.urlPostFile( link, postParms, pathTxt, pathBin );
+		LOGGER.info( PAR + txtLines );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
 	@Test public void getXmlNode( ) throws Exception {
 		//
 		String txtLine = "";
