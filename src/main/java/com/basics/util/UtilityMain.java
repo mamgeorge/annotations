@@ -94,8 +94,8 @@ public class UtilityMain {
 			val = val.replace( "\"", "'" );
 			stringBuffer.append( "{\"" + key + "\":\"" + val + "\"}," );
 		} );
-		stringBuffer.append( "{\"" + "USERNAME" + "\":\"" + System.getenv( "USERNAME" ) + "\"}" );
-		stringBuffer.append( "]" );
+		stringBuffer.append( "\n{\"" + "USERNAME" 		+ "\":\"" + System.getenv( "USERNAME" )	+ "\"}" );
+		stringBuffer.append( "\n]" );
 		return stringBuffer.toString( );
 	}
 

@@ -9,12 +9,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // $ mvn spring-boot:run
 // locate to localhost:8080/basics 
 
+/*
+	@SpringBootApplication is a convenience annotation that adds all this:
+	
+	@Configuration				: tags class as a source of bean definitions for application context
+	@EnableAutoConfiguration	: adds beans based on classpath settings, other beans, etc.
+	@EnableWebMvc				: setting up a DispatcherServlet if spring-webmvc is on classpath
+	@ComponentScan				: tells Spring to look for components, configurations, services in package
+*/
 @SpringBootApplication
 public class BasicsApplication {
 	//
-    public static void main( String[] args ) {
+    public static void main( String[ ] args ) {
 		//
 		System.out.println( "HELLO from BasicsApplication" ); //  \u001B[31m
-        SpringApplication.run(BasicsApplication.class, args);
+        SpringApplication.run( BasicsApplication.class, args );
     }
 }

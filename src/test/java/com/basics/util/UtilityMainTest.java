@@ -14,6 +14,7 @@ public class UtilityMainTest {
 	@Test public void showSys( ) throws Exception {
 		//
 		String txtLines = UtilityMain.showSys( );
+		// LOGGER.info( PAR + txtLines );
 		LOGGER.info( PAR + txtLines.substring( 0, 10 ) );
 		assertTrue( txtLines.length( ) > 1 );
 	}
