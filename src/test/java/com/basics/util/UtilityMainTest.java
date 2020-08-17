@@ -14,6 +14,7 @@ public class UtilityMainTest {
 	@Test public void showSys( ) throws Exception {
 		//
 		String txtLines = UtilityMain.showSys( );
+		// LOGGER.info( PAR + txtLines );
 		LOGGER.info( PAR + txtLines.substring( 0, 10 ) );
 		assertTrue( txtLines.length( ) > 1 );
 	}
@@ -27,7 +28,7 @@ public class UtilityMainTest {
 
 	@Test public void getFileLines( ) throws Exception {
 		//
-		String fileName = "C:/workspace/resources/Genesis_01.txt";
+		String fileName = "C:/workspace/resources/xml/Genesis_01.txt";
 		String txtLines = UtilityMain.getFileLines( fileName , "" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
 		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
@@ -38,6 +39,40 @@ public class UtilityMainTest {
 		String txtLines = UtilityMain.getFileLocal( "" , "" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
 		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
+	}
+
+	@Test public void urlGet( ) {
+		//
+		String txtLines = "";
+		String link = "http://www.google.com";
+		//
+		txtLines = UtilityMain.urlGet( link );
+		LOGGER.info( PAR + txtLines.substring( 0, 60 ) );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
+	@Test public void urlPost( ) {
+		//
+		String txtLines = "";
+		String link = "https://httpbin.org/post";
+		String postParms = "name=Martin&occupation=programmer";
+		//
+		txtLines = UtilityMain.urlPost( link , postParms );
+		LOGGER.info( PAR + txtLines.substring( 0, 60 ) );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
+	@Test public void urlPostFile( ) {
+		//
+		String txtLines = "";
+		String link = "https://httpbin.org/post";
+		String postParms = "name=Martin&occupation=programmer";
+		String pathTxt = "static/xml/books.json";
+		String pathBin = "static/xml/hal9000.wav";
+		//
+		txtLines = UtilityMain.urlPostFile( link, postParms, pathTxt, pathBin );
+		LOGGER.info( PAR + txtLines );
+		assertTrue( txtLines.length( ) > 1 );
 	}
 
 	@Test public void getXmlNode( ) throws Exception {

@@ -1,13 +1,8 @@
+# src/main/resources/application.yml
 
-server:
-  servlet:
-    context-path: /basics
-    port: 8080
+server.servlet.context-path: /basics
+server.servlet.port: 8080
 
-datasource:
-  platform: h2
+datasource.platform: h2
 
-logging:
-  level:
-    org:
-      springframework: ERROR
+logging.level.org.springframework: ERROR

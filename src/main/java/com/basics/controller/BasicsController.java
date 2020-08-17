@@ -2,6 +2,7 @@ package com.basics.controller;
 
 import com.basics.services.ICityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.logging.Logger;
 
 // new
 // import static com.basics.util.UtilityMain.GREEN;
@@ -30,15 +32,20 @@ public class BasicsController {
 
 	@Autowired private ApplicationContext applicationContext;
 
+	@Value( "${server.servlet.context-path}" ) private String CONTEXT_PATH;
+
+	public String getContextPath( ) { return CONTEXT_PATH; }
+
+	private static final Logger LOGGER = Logger.getLogger( BasicsController.class.getName( ) );
+
 	private static final String RETURN = "<br /><a href = '/basics' >return</a>";
 
 	@GetMapping( "/" )
 	public ModelAndView root(Model model) {
 		//
-		System.out.println("index");
+		System.out.println( "index" );
 		Map<String, Object> params = new HashMap<>( );
 		params.put( "index", "index" );
-		// return "index";
 		return new ModelAndView("index", params);
 	}
 
