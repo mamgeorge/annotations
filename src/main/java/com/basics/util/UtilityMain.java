@@ -1,3 +1,7 @@
+/*
+	cd c:\workspace\github\spring_annotations
+	mvn exec:java -Dexec.mainClass = "com.basics.util.UtilityMain"
+*/
 package com.basics.util;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
@@ -27,7 +31,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +55,15 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -72,6 +87,7 @@ public class UtilityMain {
 
 	public static final String FLD_SAMPLE = "static/" ;
 	public static final String TXT_SAMPLE = "Genesis_01.txt" ;
+	public static final String YML_SAMPLE = "application.yml" ;
 	public static final String XML_SAMPLE = "xml/books.xml" ;
 	public static final String JSN_SAMPLE = "xml/books.json" ;
 	public static final String ZIP_SAMPLE = "xml_wav_plants_w10.zip" ;
@@ -452,4 +468,63 @@ public class UtilityMain {
 		return xml;
 	}
 
+	public static String parseYaml2JsonNode( String yamlFileName, String applicationNode ) {
+		//
+		String txtLine = "";
+		try {
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader( );
+			InputStream inputStream = classLoader.getResourceAsStream( yamlFileName );
+			//
+			// create yaml from file
+			YAMLFactory yamlFactory = new YAMLFactory( );
+			ObjectMapper objectMapperYaml = new ObjectMapper( yamlFactory );
+			Object objectYaml = objectMapperYaml.readValue( inputStream , Map.class );
+			// System.out.println( "yaml: " + objectYaml );
+			//
+			// convert yaml to json
+			ObjectMapper objectMapperJson = new ObjectMapper( );
+			String json = objectMapperJson.writeValueAsString( objectYaml );
+			// System.out.println( "json: " + json );
+			//
+			// convert json to node object; "path" also works, "at" does not
+			ObjectMapper objectMapperNode = new ObjectMapper( );
+			JsonNode jsonNode = objectMapperNode.readTree( json );
+			txtLine = ( jsonNode.get( applicationNode ) ).asText( );
+		}
+		catch ( JsonParseException ex )	{ LOGGER.info( ex.getMessage( ) ); }
+		catch ( JsonMappingException ex )	{ LOGGER.info( ex.getMessage( ) ); }
+		catch ( IOException ex )			{ LOGGER.log( Level.SEVERE, ex.getMessage( ) ); }
+		//
+		return txtLine;
+	}
+
+	public static String parseJsonList2List( String jsonArr, int listFormat ) {
+		//
+		String txtLines = "";
+		ObjectMapper objectMapperHtml = new ObjectMapper( );
+		TypeReference<ArrayList<LinkedHashMap<String, String>>> typeReference
+			= new TypeReference<ArrayList<LinkedHashMap<String, String>>>( ) { };
+		ArrayList<LinkedHashMap<String, String>> arrayList = null;
+		LinkedHashMap<String, String> linkedHashMap = null;
+		Set set = null;
+		String txtKey = ""; String txtVal = ""; Object objVal = null;
+		String PFX = PAR; String MID = " : "; String SFX = "";
+		if ( listFormat > 0 ) { PFX = "<tr><th>"; MID = "</th<td>"; SFX = "</td></tr>"; }
+		try {
+			arrayList = (ArrayList<LinkedHashMap<String, String>>)
+				objectMapperHtml.readValue( jsonArr, typeReference );
+			for( Object object : arrayList ) {
+				//
+				linkedHashMap = ( LinkedHashMap<String, String> ) object;
+				set = linkedHashMap.keySet( );
+				txtKey = set.toString( ).substring( 1, set.toString( ).length( ) - 1 );
+				objVal = linkedHashMap.get( txtKey );
+				txtVal = objVal.toString( );
+				txtLines += PFX + txtKey + MID + txtVal + SFX;
+			}
+			System.out.println( "txtLines: " + txtLines );
+		}
+		catch ( JsonProcessingException ex ) { LOGGER.info( ex.getMessage( ) ); }
+		return txtLines;
+	}
 }
