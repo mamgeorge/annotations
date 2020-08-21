@@ -1,3 +1,7 @@
+/*
+	cd c:\workspace\github\spring_annotations
+	mvn exec:java -Dexec.mainClass = "com.basics.util.UtilityMain"
+*/
 package com.basics.util;
 
 import org.junit.Before;
@@ -11,7 +15,7 @@ public class UtilityMainTest {
 
 	@Before public void setUp( ) throws Exception { }
 
-	@Test public void showSys( ) throws Exception {
+	@Test public void showSys( ) {
 		//
 		String txtLines = UtilityMain.showSys( );
 		// LOGGER.info( PAR + txtLines );
@@ -19,14 +23,14 @@ public class UtilityMainTest {
 		assertTrue( txtLines.length( ) > 1 );
 	}
 
-	@Test public void showTime( ) throws Exception {
+	@Test public void showTime( ) {
 		//
 		String txtLine = UtilityMain.showTime( );
 		LOGGER.info( PAR + txtLine );
 		assertTrue( txtLine.length( ) > 1 );
 	}
 
-	@Test public void getFileLines( ) throws Exception {
+	@Test public void getFileLines( ) {
 		//
 		String fileName = "C:/workspace/resources/xml/Genesis_01.txt";
 		String txtLines = UtilityMain.getFileLines( fileName , "" );
@@ -34,7 +38,7 @@ public class UtilityMainTest {
 		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
 	}
 
-	@Test public void getFileLocal( ) throws Exception {
+	@Test public void getFileLocal( ) {
 		//
 		String txtLines = UtilityMain.getFileLocal( "" , "" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
@@ -75,7 +79,7 @@ public class UtilityMainTest {
 		assertTrue( txtLines.length( ) > 1 );
 	}
 
-	@Test public void getXmlNode( ) throws Exception {
+	@Test public void getXmlNode( ) {
 		//
 		String txtLine = "";
 		String xml = "<a><b id = 'aleph' ><c><d>alpha</d><d>beta</d></c></b><b id = 'beth' ></b></a>";
@@ -90,7 +94,7 @@ public class UtilityMainTest {
 		assertTrue( txtLine.length( ) > 1 );
 	}
 
-	@Test public void convertXml2Json( ) throws Exception {
+	@Test public void convertXml2Json( ) {
 		//
 		String xml = "<a><b id = 'aleph' ><c><d>alpha</d><d>beta</d></c></b><b id = 'beth' ></b></a>";
 		String txtLines = UtilityMain.convertXml2Json( xml ) ;
@@ -98,7 +102,7 @@ public class UtilityMainTest {
 		assertTrue( txtLines.length( ) > 1 );
 	}
 
-	@Test public void convertJson2Xml( ) throws Exception {
+	@Test public void convertJson2Xml( ) {
 		//
 		String json = "{ a: { b: [ { c: { d: [ alpha, beta ] }, id: aleph }, { id: beth } ] } }";
 		String txtLines = UtilityMain.convertJson2Xml( json ) ;
@@ -106,11 +110,30 @@ public class UtilityMainTest {
 		assertTrue( txtLines.length( ) > 1 );
 	}
 
-	@Test public void formatXml( ) throws Exception {
+	@Test public void formatXml( ) {
 		//
 		String xml = "<a><b><c><d>alpha</d><d>beta</d></c><id>aleph</id></b><b><id>beth</id></b></a>";
 		String txtLines = UtilityMain.formatXml( xml ) ;
 		LOGGER.info( PAR + txtLines.substring( 0 , 20 ) );
+		assertTrue( txtLines.length( ) > 1 );
+	}
+
+	@Test public void parseYaml2JsonNode( ) {
+		//
+		String yamlFileName = UtilityMain.YML_SAMPLE;
+		String applicationNode = "datasource.platform";
+		//
+		String txtLine = UtilityMain.parseYaml2JsonNode( yamlFileName , applicationNode);
+		LOGGER.info( PAR + txtLine );
+		assertTrue( txtLine.equals( "h2" ) );
+	}
+
+	@Test public void parseJsonList2List( ) {
+		//
+		String jsonArr = "[ {\"a\":\"1\"} , {\"b\":\"2\"}, {\"c\":\"3\"} ]";
+		//
+		String txtLines = UtilityMain.parseJsonList2List( jsonArr, 1 ) ;
+		LOGGER.info( PAR + txtLines );
 		assertTrue( txtLines.length( ) > 1 );
 	}
 }
