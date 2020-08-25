@@ -1,6 +1,5 @@
 /*
 	cd c:\workspace\github\spring_annotations
-	mvn exec:java -Dexec.mainClass = "com.basics.util.UtilityMain"
 */
 package com.basics.util;
 
