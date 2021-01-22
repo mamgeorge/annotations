@@ -1,8 +1,13 @@
 # src/main/resources/application.yml
 
+app.name: BasicsApplication
+
 server.servlet.context-path: /basics
 server.servlet.port: 8080
 
 datasource.platform: h2
 
 logging.level.org.springframework: ERROR
+
+spring.main.banner-mode: CONSOLE
+spring.output.ansi.enabled: ALWAYS

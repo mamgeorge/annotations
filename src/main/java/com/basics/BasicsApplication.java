@@ -2,8 +2,13 @@ package com.basics;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 // import static com.basics.util.UtilityMain.GREEN;
 // import static com.basics.util.UtilityMain.RESET;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.env.Environment;
 
 // C:\workspace\github\spring_annotations\src\main\java\com\basics\BasicsApplication.java
 // $ mvn spring-boot:run
@@ -18,11 +23,28 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 	@ComponentScan				: tells Spring to look for components, configurations, services in package
 */
 @SpringBootApplication
-public class BasicsApplication {
+public class BasicsApplication implements CommandLineRunner {
 	//
-    public static void main( String[ ] args ) {
+	// CLR (CommandLineRunner) not normally implemented	
+	// CLR, Autowired, Override, only added to show how env vars can be accessed
+	@Autowired private Environment environment;
+	@Override public void run( String... args ) throws Exception {
+
+		//
+		String appName = environment.getProperty( "app.name" ); 
+		String urlPort = environment.getProperty( "server.servlet.port" ); 
+		String urlPath = environment.getProperty( "server.servlet.context-path" ); 
+		String txtLine = appName + " at http://localhost:" + urlPort + urlPath;
+		System.out.println( "\nStarted! Running: " + txtLine ); 
+	}
+	//	
+	public static void main( String[ ] args ) {
 		//
 		System.out.println( "HELLO from BasicsApplication" ); //  \u001B[31m
-        SpringApplication.run( BasicsApplication.class, args );
-    }
+		//
+		// SpringApplication.run( BasicsApplication.class, args );
+		SpringApplication springApplication = new SpringApplication( BasicsApplication.class );
+		springApplication.setBannerMode( Banner.Mode.CONSOLE );
+		springApplication.run( args );
+	}
 }

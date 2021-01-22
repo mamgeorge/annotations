@@ -24,9 +24,11 @@ import java.lang.ClassLoader;
 import java.lang.StringBuffer;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.net.URLClassLoader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +79,11 @@ public class UtilityMain {
 
 	public static final String USER_AGENT = "Mozilla/5.0";
 	public static final String CONTENTTYPE_FORM = "application/x-www-form-urlencoded";
+	public static final String CONTENTTYPE_JSON = "application/json; charset=utf-8";
 	public static final String CONTENTTYPE_MULTI = "multipart/form-data; boundary=";
+	public static final String AUTHORIZATION_JWT = "anyService_Api"; // sourceId
+	public static final String AUTH_SECRET = "anyhash"; // client-secret in HMAC SHA256 or RSA
+
 	public static final String GREEN = "\u001b[32,1m";
 	public static final String RESET = "\u001b[0m";
 	public static final String DLM = "\n";
@@ -90,9 +96,12 @@ public class UtilityMain {
 	public static final String XML_SAMPLE = "xml/books.xml" ;
 	public static final String JSN_SAMPLE = "xml/books.json" ;
 	public static final String ZIP_SAMPLE = "xml_wav_plants_w10.zip" ;
+	public static final String COLORS = "Black: \u001b[30m, Red: \u001b[31m, Green: \u001b[32m, Yellow: \u001b[33m, Blue: \u001b[34m, Magenta: \u001b[35m, Cyan: \u001b[36m, White: \u001b[37m ";
 
 	public static void main( String[ ] args ) {
 		//
+		colorize( "■" );
+		System.out.println( showTime( ) );
 		System.out.println( GREEN + "DONE" + RESET );
 	}
 
@@ -117,8 +126,23 @@ public class UtilityMain {
 	public static String showTime( ) {
 		//
 		String txtLine = "";
-		txtLine = new Date( ).toString( );
+		LocalDateTime localDateTime = LocalDateTime.now( );
+		txtLine = ISO_DATE_TIME.format(localDateTime);
+		// txtLine = new Date( ).toString( );
 		return txtLine;
+	}
+
+	private static void colorize(String txtVal) {
+		//
+		String txtLine = "";
+		String[ ] colorDuo = null;
+		String colorVal = "";
+		for( String color : COLORS.split(",") ) {
+			colorDuo = color.split(":");
+			colorVal = colorDuo[1].replaceAll("4","3");
+			txtLine += "" + colorVal + txtVal + RESET;
+		}
+		System.out.println( txtLine );
 	}
 
 	public static String getFileLines( String fileName , String delim ) {
@@ -145,12 +169,19 @@ public class UtilityMain {
 		// https://howtodoinjava.com/java/io/read-file-from-resources-folder/
 		// File file = ResourceUtils.getFile("classpath:config/sample.txt")
 		String txtLines = "";
+		String urlFile = "";
 		if ( fileName == null || fileName.equals( "" ) ) { fileName = FLD_SAMPLE + TXT_SAMPLE; }
 		if ( delim == null || delim.equals( "" ) ) { delim = DLM; }
 		try {
 			//
 			ClassLoader classLoader = ClassLoader.getSystemClassLoader( );
-			File file = new File( classLoader.getResource( fileName ).getFile( ) );
+			// fails if run in: mvn exec:java -Dexec.mainClass
+			// URL[] urls = ( (URLClassLoader) classLoader ).getURLs();
+			// for(URL url: urls){ System.out.println(url.getFile( ) ); }
+			//
+			URL url = classLoader.getResource( fileName );
+			urlFile = url.getFile( );
+			File file = new File( urlFile );
 			txtLines = new String( Files.readAllBytes( file.toPath( ) ), UTF_8 );
 			txtLines = txtLines.replaceAll( "\n" , delim );
 		}
@@ -166,12 +197,14 @@ public class UtilityMain {
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection( );
 			httpConn.setRequestMethod( "GET" );
 			httpConn.setRequestProperty( "User-Agent", USER_AGENT );
+		//	httpConn.setRequestProperty( "Content-Type", CONTENTTYPE_JSON );
+		//	httpConn.setRequestProperty( "Authorization", "JWT " + jwtSourceId );
 			httpConn.setConnectTimeout(5000);
 			httpConn.setReadTimeout(5000);
 			//
 			int responseCode = httpConn.getResponseCode( );
-			LOGGER.info( "Sending GET to: " + url );
-			LOGGER.info( "Response code : " + responseCode );
+			LOGGER.info( "sends GET to: " + url );
+			LOGGER.info( "responseCode: " + responseCode );
 			//
 			InputStream inputStream = httpConn.getInputStream( );
 			InputStreamReader isr = new InputStreamReader( inputStream );
@@ -201,6 +234,7 @@ public class UtilityMain {
 			httpConn.setRequestMethod( "POST" );
 			httpConn.setRequestProperty( "User-Agent", USER_AGENT );
 			httpConn.setRequestProperty( "Content-Type", CONTENTTYPE_FORM );
+		//	httpConn.setRequestProperty( "Authorization", "JWT " + jwtSourceId );
 			//
 			OutputStream outputStream = httpConn.getOutputStream( );
 			outputStream.write( postParms.getBytes( ) );
@@ -254,6 +288,7 @@ public class UtilityMain {
 			urlConn = url.openConnection( );
 			urlConn.setDoOutput(true);
 			urlConn.setRequestProperty( "Content-Type", CONTENTTYPE_MULTI + boundary );
+		//	urlConn.setRequestProperty( "Authorization", "JWT " + jwtSourceId );
 			//
 			System.out.println( "0 urlConn.getOutputStream( )" );
 			OutputStream outputStream = urlConn.getOutputStream( );
@@ -270,7 +305,7 @@ public class UtilityMain {
 			writer.append( "--" + boundary).append(CRLF);
 			writer.append( "Content-Disposition: form-data; name=\"textFile\"; filename=\""
 				+ fileTxt.getName( ) + "\"" ).append(CRLF);
-			writer.append("Content-Type: text/plain; charset=" + UTF_8 ).append(CRLF);
+			writer.append( "Content-Type: text/plain; charset=" + UTF_8 ).append(CRLF);
 			writer.append(CRLF).flush( );
 			Files.copy( fileTxt.toPath( ), outputStream );
 			outputStream.flush( ); // Important before continuing with writer!
@@ -527,3 +562,4 @@ public class UtilityMain {
 		return txtLines;
 	}
 }
+//----
