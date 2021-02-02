@@ -12,13 +12,16 @@
 	<th>id</th>
 	<th>name</th>
 	<th>population</th>
+	<th>date</th>
 	</tr>
 
+<#assign datetimer = .now>
 <#list cities as city>
 <tr>
 	<td>${ city.id }</td>
 	<td>${ city.name }</td>
 	<td>${ city.population }</td>
+	<td>${ datetimer?datetime?iso_local }</td>
 	</tr>
 </#list>
 </table>

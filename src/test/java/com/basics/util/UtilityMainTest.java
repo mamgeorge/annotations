@@ -31,10 +31,11 @@ public class UtilityMainTest {
 
 	@Test public void getFileLines( ) {
 		//
-		String fileName = "C:/workspace/resources/xml/Genesis_01.txt";
+		String fileName = "C:/workspace/greetings.txt";
 		String txtLines = UtilityMain.getFileLines( fileName , "" );
+		//LOGGER.info( "[#### " + PAR + txtLines + " ####]" );
 		LOGGER.info( PAR + txtLines.substring( 0, 7 ) );
-		assertTrue( txtLines.substring( 0, 7 ).equals( "Genesis" ) );
+		assertTrue( txtLines.contains( "Autumn" ) );
 	}
 
 	@Test public void getFileLocal( ) {
