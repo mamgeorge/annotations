@@ -36,15 +36,16 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-freemarker</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+			<version>2.4.2</version>
 			</dependency>
-
-		<!-- BEG -->
+			
+		<!-- BEG: allows testing, json, yml  -->
 		<dependency><!-- added to allow for testing -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

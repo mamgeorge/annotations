@@ -35,7 +35,7 @@ public class BasicsApplication implements CommandLineRunner {
 		String urlPort = environment.getProperty( "server.servlet.port" ); 
 		String urlPath = environment.getProperty( "server.servlet.context-path" ); 
 		String txtLine = appName + " at http://localhost:" + urlPort + urlPath;
-		System.out.println( "\nStarted! Running: " + txtLine ); 
+		System.out.println( "\n" + "Started! Running: " + txtLine ); 
 	}
 	//	
 	public static void main( String[ ] args ) {
