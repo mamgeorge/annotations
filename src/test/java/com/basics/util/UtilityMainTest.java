@@ -10,10 +10,13 @@ import static org.junit.Assert.assertTrue;
 import static com.basics.util.UtilityMain.PAR;
 import static com.basics.util.UtilityMain.LOGGER;
 
+// JUnit 4: Assert		, @Ignore	, assertEquals msg 1st
+// JUnit 5: Assertions	, @Disabled	, assertEquals arg 1st
 public class UtilityMainTest {
 
 	@Before public void setUp( ) throws Exception { }
 
+	// J4: @Test (expected = IOException.class), J5: uses lambda
 	@Test public void showSys( ) {
 		//
 		String txtLines = UtilityMain.showSys( );

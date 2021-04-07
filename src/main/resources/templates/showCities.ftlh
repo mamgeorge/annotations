@@ -1,32 +1,35 @@
 <!DOCTYPE html>
-<html><head><title>city list</title>
+<html><head><title>showCities</title>
 <meta charset = "UTF-8">
-<meta name = "viewport" content = "width=device-width, initial-scale=1.0">
 <link rel = "stylesheet" href = "style.css">
 </head>
 
-<body><center><h3>List of Cities</h3>
+<body><center>
+<br /><h3>showCities</h3>
+<br /><h5>FreeMarker: ${ .now?datetime?iso_local }</h5>
+<br />
+<br /><h5>TOTAL CITIES: [ ${ cities?size } out of ${ cityCount } ]</h5>
 
-<table border = "0">
+<br /><div class = "divbox" style = "width: 50%">
+<table>
 <tr>
 	<th>id</th>
 	<th>name</th>
 	<th>population</th>
-	<th>date</th>
 	</tr>
 
 <#assign datetimer = .now>
 <#list cities as city>
 <tr>
-	<td>${ city.id }</td>
-	<td>${ city.name }</td>
-	<td>${ city.population }</td>
-	<td>${ datetimer?datetime?iso_local }</td>
+	<td>${ city?index+1		 } / ${ city.id! 0 }</td>
+	<td>${ city.name		!1 }</td>
+	<td>${ city.population	!2 }</td>
 	</tr>
-</#list>
+	</#list>
 </table>
+</div>
 
-<br/><a href = "/basics">return</a>
+<br/><a href = "/">return</a>
 
 </center></body>
 </html>

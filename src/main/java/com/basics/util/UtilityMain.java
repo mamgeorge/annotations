@@ -159,7 +159,7 @@ public class UtilityMain {
 			txtLines = String.join( "\n" , list );
 			txtLines = txtLines.replaceAll( "\n" , delim );
 		}
-		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (IOException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		//
 		return txtLines;
 	}
@@ -185,7 +185,7 @@ public class UtilityMain {
 			txtLines = new String( Files.readAllBytes( file.toPath( ) ), UTF_8 );
 			txtLines = txtLines.replaceAll( "\n" , delim );
 		}
-		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (IOException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		return txtLines;
 	}
 
@@ -373,7 +373,7 @@ public class UtilityMain {
 				list.add( file );
 			}
 		}
-		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (IOException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		return list;
 	}
 
@@ -416,10 +416,10 @@ public class UtilityMain {
 				txtLines += delim + nodeList.item( ictr ).getNodeValue( );
 			}
 		}
-		catch (ParserConfigurationException ex)	 { LOGGER.info( ex.getMessage( ) ); }
-		catch (SAXException ex)					 { LOGGER.info( ex.getMessage( ) ); }
-		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
-		catch (IOException ex)					 { LOGGER.info( ex.getMessage( ) ); }
+		catch (ParserConfigurationException ex)	 { LOGGER.warning( ex.getMessage( ) ); }
+		catch (SAXException ex)					 { LOGGER.warning( ex.getMessage( ) ); }
+		catch (XPathExpressionException ex)		 { LOGGER.warning( ex.getMessage( ) ); }
+		catch (IOException ex)					 { LOGGER.warning( ex.getMessage( ) ); }
 		return txtLines;
 	}
 
@@ -435,7 +435,7 @@ public class UtilityMain {
 			XPath xPath = XPathFactory.newInstance( ).newXPath( );
 			txtLines = xPath.evaluate( xpathTxt , inputSource );
 		}
-		catch (XPathExpressionException ex)		 { LOGGER.info( ex.getMessage( ) ); }
+		catch (XPathExpressionException ex)		 { LOGGER.warning( ex.getMessage( ) ); }
 		return txtLines;
 	}
 
@@ -449,7 +449,7 @@ public class UtilityMain {
 			JSONObject jsonObject = XML.toJSONObject( xml );
 			json = jsonObject.toString( INDENT_FACTOR );
 		}
-		catch (JSONException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (JSONException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		return json;
 	}
 
@@ -462,7 +462,7 @@ public class UtilityMain {
 			JSONObject jsonObj = new JSONObject( json );
 			xml = XML.toString(jsonObj);
 		}
-		catch (JSONException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (JSONException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		return xml;
 	}
 
@@ -479,9 +479,9 @@ public class UtilityMain {
 			InputSource inputSource = new InputSource( stringReader );
 			document = documentBuilder.parse( inputSource );
 		}
-		catch (ParserConfigurationException  ex) { LOGGER.info( ex.getMessage( ) ); }
-		catch (SAXException ex) { LOGGER.info( ex.getMessage( ) ); }
-		catch (IOException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (ParserConfigurationException  ex) { LOGGER.warning( ex.getMessage( ) ); }
+		catch (SAXException ex) { LOGGER.warning( ex.getMessage( ) ); }
+		catch (IOException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		try {
 			StringWriter stringWriter = new StringWriter( );
 			StreamResult xmlOutput = new StreamResult( stringWriter );
@@ -497,8 +497,8 @@ public class UtilityMain {
 			transformer.transform( domSource , xmlOutput );
 			xml = xmlOutput.getWriter( ).toString( ) ;
 		}
-		catch (TransformerConfigurationException ex) { LOGGER.info( ex.getMessage( ) ); }
-		catch (TransformerException ex) { LOGGER.info( ex.getMessage( ) ); }
+		catch (TransformerConfigurationException ex) { LOGGER.warning( ex.getMessage( ) ); }
+		catch (TransformerException ex) { LOGGER.warning( ex.getMessage( ) ); }
 		return xml;
 	}
 
@@ -525,8 +525,8 @@ public class UtilityMain {
 			JsonNode jsonNode = objectMapperNode.readTree( json );
 			txtLine = ( jsonNode.get( applicationNode ) ).asText( );
 		}
-		catch ( JsonParseException ex )	{ LOGGER.info( ex.getMessage( ) ); }
-		catch ( JsonMappingException ex )	{ LOGGER.info( ex.getMessage( ) ); }
+		catch ( JsonParseException ex )		{ LOGGER.warning( ex.getMessage( ) ); }
+		catch ( JsonMappingException ex )	{ LOGGER.warning( ex.getMessage( ) ); }
 		catch ( IOException ex )			{ LOGGER.log( Level.SEVERE, ex.getMessage( ) ); }
 		//
 		return txtLine;
@@ -558,7 +558,7 @@ public class UtilityMain {
 			}
 			System.out.println( "txtLines: " + txtLines );
 		}
-		catch ( JsonProcessingException ex ) { LOGGER.info( ex.getMessage( ) ); }
+		catch ( JsonProcessingException ex ) { LOGGER.warning( ex.getMessage( ) ); }
 		return txtLines;
 	}
 }

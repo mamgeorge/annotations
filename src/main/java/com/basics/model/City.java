@@ -23,15 +23,12 @@ public class City {
 	}
 
 	public Long getId( ) { return id; }
-
 	public void setId( Long id ) { this.id = id; }
 
 	public String getName( ) { return name; }
-
 	public void setName( String name ) { this.name = name; }
 
 	public int getPopulation( ) { return population; }
-
 	public void setPopulation(int population) { this.population = population; }
 
 	@Override
@@ -44,15 +41,15 @@ public class City {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object object) {
 		//
-		if ( this == obj ) { return true; }
-		if ( obj == null ) { return false; }
-		if ( getClass( ) != obj.getClass( ) ) { return false; }
-		final City other = ( City ) obj;
-		if ( this.population != other.population ) { return false; }
-		if ( !Objects.equals( this.name, other.name ) ) { return false; }
-		return Objects.equals( this.id, other.id );
+		if ( this == object ) { return true; }
+		if ( object == null ) { return false; }
+		if ( getClass( ) != object.getClass( ) ) { return false; }
+		final City otherCity = ( City ) object;
+		if ( this.population != otherCity.population ) { return false; }
+		if ( !Objects.equals( this.name, otherCity.name ) ) { return false; }
+		return Objects.equals( this.id, otherCity.id );
 	}
 
 	@Override
